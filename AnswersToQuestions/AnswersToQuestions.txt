@@ -1,0 +1,35 @@
+1.Total amount each customer spent at the restuarant
+	A:$76
+	B:$74
+	C:$36
+2.The number of days each customer visited the restuarant
+	A:4
+	B:6
+	C:2
+3.First item from the menu purchased by each customer
+	A:sushu and curry
+	B:curry
+	C:ramen
+4.The most purchased item on the menu and the number of times it was purchased by all customers
+	ramen:8
+5.The most popular item for each customer
+	A:ramen
+	B:curry,sushi, and ramen
+	C:ramen
+6.The item purchased first by a customer after they became a member
+	A:curry
+	B:sushi
+7:The item purchased just before a customer became a member
+	A:curry, and sushi
+	B:sushi
+8.Total items and amount spent for each customer before the beacame a member
+	A:2 items, and $25
+	B:3 items, and $40
+9.Points each customer has if each $1 spent equates to 10 points and sushi has a 2x point multiplier
+	A:860
+	B:940
+	C:360
+10.Points customer A and B would have at the end of January if in the first week after joining the
+	program(including the join date), they earn 2x points on all items, not just on sushi
+	A:1370
+	B:940
