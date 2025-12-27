@@ -50,11 +50,16 @@ Moreover, the case study questions are as follows:
 ## Folder Structure
 
 ```
-	├── DannyDinner:
-      ├── AnswersToQuestions.txt : A text file that contains the answers to the case study questions
-      ├── ColdCode.sql : Contains the cold SQL code used to analyse the data
-      ├── Database.sql : Contains the SQL code to create the database used to store data tables
-      └── Tables.sql : Contains the SQL code to create tables, and insert data into the tables
+	├── DannyDinner/:
+	  ├──AnswersToQuestions/:
+		└──AnswersToQuestions.txt : A text file that contains the answers to the case study questions
+	  ├──Database/:
+		└──CreateDB.sql: Contains the SQL code to create the database used to store data tables
+	  ├──src/:
+		├──ColdCode.sql : Contains the cold SQL code used to analyse the data
+		└──DataCleaning.sql: Contains the sql code used for data cleaning 
+	  └── Tables/ :
+		└── RawTables.sql : Contains the SQL code to create tables, and insert data into the tables
 ```
 ## How to run the SQL code
 
@@ -69,12 +74,7 @@ Moreover, the case study questions are as follows:
 
 ## Project Status
 
-INCOMPLETE
-
-TO DO(Bonus Questions):
-
-	1. Join all the things
-	2.Rank all the things
+COMPLETE
 
 ## Contributors
 
