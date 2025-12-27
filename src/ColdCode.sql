@@ -5,7 +5,7 @@
           learning purpose in the future
 */
 
-USE EightWeekChallenge1;
+USE DannyDinnerDB;
 -- ========== Question 1 ==========
 /*TODO:
     1.Join the MENU table with the SALES table
@@ -13,20 +13,20 @@ USE EightWeekChallenge1;
     3.GROUP the sums BY the Customer_id
 */
 
-SELECT s.Customer_id, SUM(Price) Total_Spent
+SELECT s.CustomerID, SUM(Price) Total_Spent
 FROM sales s
 JOIN menu m
-ON s.Product_id = m.Product_id
-GROUP BY s.Customer_id
+ON s.ProductID = m.ProductID
+GROUP BY s.CustomerID
 
 -- ========== Question 2 ==========
 /*TODO:
     1.COUNT the DISTINCT order_dates
     2.GROUP the counts BY Customer_id
 */
-SELECT Customer_id, COUNT(DISTINCT Order_date) Nr_Of_Days_Visited
+SELECT CustomerID, COUNT(DISTINCT OrderDate) Nr_Of_Days_Visited
 FROM sales
-GROUP BY Customer_id;
+GROUP BY CustomerID;
 
 --========== Question 3 ==========
 /*TODO:
@@ -36,13 +36,13 @@ GROUP BY Customer_id;
     4.ORDERed BY Order_date in ASC order
     5.From the results, Extract the Customer_id,Order_date, and the product details
 */
-SELECT Customer_id, Order_date, Product_id, Product_name, Price
+SELECT CustomerID, OrderDate, ProductID, ProductName, Price
 FROM (
-SELECT s.*,m.Product_name, m.Price, DENSE_RANK() OVER(PARTITION BY s.Customer_id ORDER BY s.Order_date)
+SELECT s.*,m.ProductName, m.Price, DENSE_RANK() OVER(PARTITION BY s.CustomerID ORDER BY s.OrderDate)
     dr_OrderDate
 FROM sales s
 JOIN menu m
-ON s.Product_id = m.Product_id
+ON s.ProductID = m.ProductID
     )sQuery
 WHERE dr_OrderDate = 1;
 
@@ -56,13 +56,13 @@ ON s.Product_id = m.Product_id
 )sQuery
 WHERE Order_date = FirstOrderDate;*/
     --Second option(first try, before learning WINDOW functions)
-SELECT Customer_id, Order_date, Product_id, Product_name
+SELECT CustomerID, OrderDate, ProductID, ProductName
 FROM (
-    SELECT TOP 5 s.*, _m.Product_name 
+    SELECT TOP 5 s.*, _m.ProductName 
     FROM sales s
     JOIN menu _m
-    ON s.Product_id = _m.Product_id
-    ORDER BY s.Order_date
+    ON s.ProductID = _m.ProductID
+    ORDER BY s.OrderDate
     )sQuery;
 
 -- ========= Question 4 =========
@@ -75,14 +75,14 @@ FROM (
     6.From the results, extract the DISTINCT Product_id, Product_name,Price, and SalesPerProduct 
       where the DENSE_RANK is 1
 */
-SELECT DISTINCT Product_id, Product_name,Price, SalesPerProduct,dr_SalesPerProduct
+SELECT DISTINCT ProductID, ProductName,Price, SalesPerProduct,dr_SalesPerProduct
 FROM (
     SELECT *, DENSE_RANK() OVER(ORDER BY SalesPerProduct DESC) dr_SalesPerProduct
     FROM(
-        SELECT s.Customer_id, s.Order_date, m.*, COUNT(*) OVER(PARTITION BY s.Product_id) SalesPerProduct
+        SELECT s.CustomerID, s.OrderDate, m.*, COUNT(*) OVER(PARTITION BY s.ProductID) SalesPerProduct
         FROM sales s
         JOIN menu m
-        ON s.Product_id = m.Product_id
+        ON s.ProductID = m.ProductID
         ) sQuery
     ) _s
 WHERE dr_SalesPerProduct = 1;
@@ -118,15 +118,15 @@ ORDER BY Nr_Of_Times_Ordered DESC;*/
     6.From the results, extract the DISTINCT Customer_id, Product_id, Product_name, Price, ProductPopularityPerCustomer
       where the DENSE_RANK is 1
 */
-SELECT DISTINCT Customer_id, Product_id, Product_name, Price, ProductPopularityPerCustomer
+SELECT DISTINCT CustomerID, ProductID, ProductName, Price, ProductPopularityPerCustomer
 FROM(
-    SELECT Customer_id, Product_id, Product_name, Price, ProductPopularityPerCustomer
+    SELECT CustomerID, ProductID, ProductName, Price, ProductPopularityPerCustomer
         ,DENSE_RANK() OVER(PARTITION BY Customer_id ORDER BY ProductPopularityPerCustomer DESC) dr_ProductPopularityPerCustomer
     FROM (
-        SELECT s.*, m.Product_name, m.Price, COUNT(*) OVER(PARTITION BY s.Customer_id, s.Product_id) ProductPopularityPerCustomer
+        SELECT s.*, m.ProductName, m.Price, COUNT(*) OVER(PARTITION BY s.Customer_id, s.ProductID) ProductPopularityPerCustomer
         FROM sales s
         JOIN menu m
-        ON s.Product_id = m.Product_id
+        ON s.ProductID = m.ProductID
         )innerSubQuery
         ) sQuery
 WHERE dr_ProductPopularityPerCustomer = 1;
@@ -158,16 +158,16 @@ ORDER BY Nr_Of_Times_Each_Product_Was_Ordered DESC, s.Customer_id DESC;*/
     5.From the results, extract every detail except dr_OrderDate WHERE DENSE_RANK = 1
 */
 
-SELECT Customer_id,Join_Date, Order_date, Product_id, Product_name, Price
+SELECT CustomerID,JoinDate, OrderDate, ProductID, ProductName, Price
 FROM(
-    SELECT s.Customer_id, s.Order_date,mb.Join_Date, m.Product_id, m.Product_name, m.Price 
+    SELECT s.CustomerID, s.OrderDate,mb.JoinDate, m.ProductID, m.ProductName, m.Price 
         ,DENSE_RANK() OVER(PARTITION BY s.Customer_id ORDER BY s.Order_date) dr_OrderDate
     FROM sales s
     JOIN members mb
-    ON s.Customer_id = mb.Customer_id
+    ON s.CustomerID = mb.CustomerID
     JOIN menu m
-    ON s.Product_id = m.Product_id
-    WHERE s.Order_date >= mb.Join_Date
+    ON s.ProductID = m.ProductID
+    WHERE s.OrderDate >= mb.JoinDate
     ) sQuery
 WHERE dr_OrderDate = 1;
 
@@ -205,16 +205,16 @@ ON mn.Product_id = sQuery.Product_id;*/
     5.From the results, extract every detail except dr_OrderDate WHERE DENSE_RANK = 1
 */
 
-SELECT Customer_id,Join_Date, Order_date, Product_id, Product_name, Price
+SELECT CustomerID,JoinDate, OrderDate, ProductID, ProductName, Price
 FROM (
-SELECT s.Customer_id, s.Order_date,mb.Join_Date, m.Product_id, m.Product_name, m.Price 
+SELECT s.CustomerID, s.OrderDate,mb.JoinDate, m.ProductID, m.ProductName, m.Price 
         ,DENSE_RANK() OVER(PARTITION BY s.Customer_id ORDER BY s.Order_date DESC) dr_OrderDate
     FROM sales s
     JOIN members mb
-    ON s.Customer_id = mb.Customer_id
+    ON s.CustomerID = mb.CustomerID
     JOIN menu m
-    ON s.Product_id = m.Product_id
-    WHERE s.Order_date < mb.Join_Date
+    ON s.ProductID = m.ProductID
+    WHERE s.OrderDate < mb.JoinDate
     ) sQuery
 WHERE dr_OrderDate = 1;
 
@@ -262,17 +262,17 @@ WHERE s.Order_date < mb.Join_Date) sQuery
 JOIN menu m
 ON sQuery.Product_id = m.Product_id;*/
 
-SELECT sQuery.Customer_id, COUNT(*) Orders_Before_Membership, SUM(sQuery.Price) Amount_Before_Membership
+SELECT sQuery.CustomerID, COUNT(*) Orders_Before_Membership, SUM(sQuery.Price) Amount_Before_Membership
 FROM (
-    SELECT m.*, s.Order_date, _m.*
+    SELECT m.*, s.OrderDate, _m.*
     FROM members m      --Include members
     JOIN sales s
-    ON m.Customer_id = s.Customer_id
+    ON m.CustomerID = s.CustomerID
     JOIN menu _m        --Get prices from the menu
-    ON _m.Product_id = s.Product_id
-    WHERE s.Order_date < m.Join_Date
+    ON _m.ProductID = s.ProductID
+    WHERE s.OrderDate < m.JoinDate
     ) sQuery
-GROUP BY sQuery.Customer_id;
+GROUP BY sQuery.CustomerID;
 
 -- =========== Question 9 ================
 /*TODO:
@@ -283,18 +283,18 @@ GROUP BY sQuery.Customer_id;
     5.GROUP BY Customer_id
 */
 
-SELECT sQuery.Customer_id, SUM(sQuery.Points_Earned) Total_Points_Earned    --Summarize the points earned...
+SELECT sQuery.CustomerID, SUM(sQuery.Points_Earned) Total_Points_Earned    --Summarize the points earned...
 FROM (
-    SELECT s.*, _m.Product_name, _m.Price,
+    SELECT s.*, _m.ProductName, _m.Price,
         CASE    -- Multiply every price by 10 for each $1 spent, or 20 for sushi
-            WHEN _m.Product_name = LOWER('sushi') THEN _m.Price *20
+            WHEN _m.ProductName = LOWER('sushi') THEN _m.Price *20
             ELSE _m.Price*10
         END AS Points_Earned
     FROM sales s
     JOIN menu _m    --Get the prices for the menu table
-    ON s.Product_id = _m.Product_id
+    ON s.ProductID = _m.ProductID
     ) sQuery
-GROUP BY sQuery.Customer_id;    --...for each Cunstomer_id
+GROUP BY sQuery.CustomerID;    --...for each Cunstomer_id
 
 --============== Question 10 ==============
 /*TODO:
@@ -308,19 +308,50 @@ GROUP BY sQuery.Customer_id;    --...for each Cunstomer_id
     6.GROUP BY Customer_id
 */
 
-SELECT Customer_id, SUM(Points_After_Joining) End_Of_January_Points
+SELECT CustomerID, SUM(Points_After_Joining) End_Of_January_Points
 FROM (
     -- Subquery
-    SELECT m.*, s.Order_date, _m.*,
+    SELECT m.*, s.OrderDate, _m.*,
         CASE
-            WHEN (s.Order_date BETWEEN m.Join_Date AND DATEADD(DAY,7,m.Join_Date)) OR _m.Product_name = 'sushi' THEN _m.Price*20
+            WHEN (s.OrderDate BETWEEN m.JoinDate AND DATEADD(DAY,7,m.JoinDate)) OR _m.ProductName = 'sushi' THEN _m.Price*20
             ELSE _m.Price*10
         END AS Points_After_Joining
     FROM members m
     JOIN sales s
-    ON m.Customer_id = s.Customer_id
+    ON m.CustomerID = s.CustomerID
     JOIN menu _m
-    ON s.Product_id = _m.Product_id
-    WHERE s.Order_date <= EOMONTH(m.Join_Date)
+    ON s.ProductID = _m.ProductID
+    WHERE s.OrderDate <= EOMONTH(m.JoinDate)
     ) sQuery
-GROUP BY Customer_id;
+GROUP BY CustomerID;
+
+/********************* BONUS Questions **********************/
+--JOIN all the things
+SELECT s.CustomerID, OrderDate, m.ProductName, m.Price
+        ,(CASE
+            WHEN s.CustomerID = mb.CustomerID AND s.OrderDate >= mb.JoinDate THEN 'Y'
+            ELSE 'N'
+        END) Member
+FROM sales s
+JOIN menu m
+ON s.ProductID = m.ProductID
+LEFT JOIN members mb
+ON s.CustomerID = mb.CustomerID;
+
+-- Rank all the things
+SELECT *, (CASE
+            WHEN Member = 'Y' THEN DENSE_RANK() OVER(PARTITION BY CustomerID, Member ORDER BY OrderDate)
+            ELSE NULL
+           END) AS Ranking
+FROM(
+SELECT s.CustomerID, OrderDate, m.ProductName, m.Price
+        ,(CASE
+            WHEN s.CustomerID = mb.CustomerID AND s.OrderDate >= mb.JoinDate THEN 'Y'
+            ELSE 'N'
+        END) Member
+FROM sales s
+JOIN menu m
+ON s.ProductID = m.ProductID
+LEFT JOIN members mb
+ON s.CustomerID = mb.CustomerID
+) SubQuery
